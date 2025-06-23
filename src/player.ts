@@ -1,24 +1,25 @@
 export class Player {
-  private img: HTMLImageElement;
-  private loaded: boolean = false;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  image: HTMLImageElement;
+  scale: number = 0.4;
 
-  constructor(path: string = "./public/child.png") {
-    this.img = new Image();
-    this.img.src = path;
-    this.img.onload = () => {
-      this.loaded = true;
-    };
+  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.image = new Image();
+    this.image.src = "/assets/child.png";
   }
 
-  draw(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    width: number = 100,
-    height: number = 160
-  ) {
-    if (this.loaded) {
-      ctx.drawImage(this.img, x - width / 2, y - height, width, height);
-    }
+  draw() {
+    if (!this.image.complete) return;
+
+    const width = this.image.width * this.scale;
+    const height = this.image.height * this.scale;
+
+    const x = this.canvas.width / 2 - width / 2;
+    const y = this.canvas.height / 2 - height / 2 + 40; // centré un peu vers le bas
+
+    this.ctx.drawImage(this.image, x, y, width, height);
   }
 }

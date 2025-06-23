@@ -1,20 +1,28 @@
+import "destyle.css";
+import "./style.css";
 import { Player } from "./player";
 
-const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+const canvas = document.createElement("canvas");
+canvas.id = "fabrik-canvas";
+document.body.appendChild(canvas);
+
+canvas.width = 360;
+canvas.height = 640;
+
 const ctx = canvas.getContext("2d")!;
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const player = new Player(canvas, ctx);
 
-const player = new Player();
-
-function draw() {
+function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Exemple de positionnement centré
-  player.draw(ctx, canvas.width / 2, canvas.height * 0.7);
+  // fond
+  ctx.fillStyle = "#0f1114";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  requestAnimationFrame(draw);
+  // personnage
+  player.draw();
+
+  requestAnimationFrame(animate);
 }
 
-draw();
-
+animate();
