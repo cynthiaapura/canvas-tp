@@ -34,7 +34,7 @@
 ## 🧱 Moodboard
 > Le moodboard compile les influences visuelles majeures du projet (environnement, lumière, ambiance, composition) :
 
-![Moodboard](assets/moodboard.png)
+![Moodboard](./public/assets/moodboard.png)
 
 ## 🚀 Lancement du projet
 

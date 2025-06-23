@@ -1,24 +1,20 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { Player } from "./player";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+const ctx = canvas.getContext("2d")!;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const player = new Player();
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Exemple de positionnement centré
+  player.draw(ctx, canvas.width / 2, canvas.height * 0.7);
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
