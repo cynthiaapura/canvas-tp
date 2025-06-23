@@ -1,6 +1,7 @@
 # 🏭 FABRIK — Projet Creative Development
 
 > Projet réalisé dans le cadre du cours **Creative Development**
+>
 > Objectif : concevoir une **cover de jeu vidéo animée et générative**
 
 
