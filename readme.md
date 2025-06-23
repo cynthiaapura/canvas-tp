@@ -6,8 +6,7 @@
 
 ## 🧠 Auteurs
 
-**Cynthia APURA, Hermione Tetard**
-
+**Cynthia APURA, Hermione TETARD**
 ---
 
 ## 🎮 Concept narratif
@@ -40,5 +39,8 @@
 ## 🚀 Lancement du projet
 
 ```bash
+git clone https://github.com/cynthiaapura/canvas-tp.git
+cd canvas-tp
 npm install
 npm run dev
+```
