@@ -6,12 +6,11 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 canvas {
-  width: 360px;
-  height: 640px;
-  background-color: #0f1114;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-  border-radius: 8px;
+  display: block;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  z-index: 1;
 }
