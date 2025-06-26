@@ -1,38 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
 html, body {
   margin: 0;
   padding: 0;
   height: 100vh;
   width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
-}
-
-#game-title {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 3.5rem;
-  font-weight: 900;
-  color: #cfd8dc; /* bleu-gris clair */
-  letter-spacing: 0.3em;
-  text-shadow:
-    0 0 5px #90a4ae,
-    0 0 10px #607d8b,
-    0 0 20px #455a64;
-  user-select: none;
-  pointer-events: none;
-  mix-blend-mode: screen; /* optionnel, pour effet lumière */
-  animation: flicker 3s infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 canvas {
   display: block;
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
-  z-index: 1;
 }
