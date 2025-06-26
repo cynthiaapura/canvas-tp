@@ -13,6 +13,9 @@ silhouetteImage.src = "/assets/child.png";
 const characterImage = new Image();
 characterImage.src = "/assets/character.png";
 
+const factoryImage = new Image();
+factoryImage.src = "/assets/factory.png";
+
 let imgWidth = 0;
 let imgHeight = 0;
 
@@ -39,6 +42,11 @@ silhouetteImage.onload = () => {
 
 characterImage.onload = () => {
   isCharacterLoaded = true;
+};
+
+let isFactoryLoaded = false;
+factoryImage.onload = () => {
+  isFactoryLoaded = true;
 };
 
 function resizeCanvas() {
@@ -78,27 +86,28 @@ function drawGlitchTitle(timestamp: number) {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  const baseAlpha = 0.75 + 0.05 * Math.sin(timestamp * 0.002);
-  ctx.shadowColor = `rgba(80, 120, 140, ${baseAlpha})`;
-  ctx.shadowBlur = 10;
-  ctx.fillStyle = `rgba(200, 220, 230, ${baseAlpha})`;
+  ctx.shadowColor = "rgba(0, 180, 255, 0.7)";
+  ctx.shadowBlur = 15;
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
   ctx.fillText(text, centerX, y);
 
-  if (Math.random() < 0.05) {
-    ctx.fillStyle = "rgba(165, 107, 5, 0.46)";
-    const offsetX = -2 + Math.random() * 1.5;
-    const offsetY = -1 + Math.random() * 1.5;
+  if (Math.random() < 0.02) {
+    ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+    const offsetX = -1 + Math.random() * 1;
+    const offsetY = -0.5 + Math.random() * 1;
     ctx.fillText(text, centerX + offsetX, y + offsetY);
   }
 
-  if (Math.random() < 0.05) {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
-    const offsetX = 1.5 + Math.random() * 1.5;
-    const offsetY = -1 + Math.random() * 1.5;
+  if (Math.random() < 0.02) {
+    ctx.fillStyle = "rgba(0, 255, 255, 0.3)";
+    const offsetX = 0.5 + Math.random() * 1;
+    const offsetY = -0.5 + Math.random() * 1;
     ctx.fillText(text, centerX + offsetX, y + offsetY);
   }
 
   ctx.restore();
+
 }
 
 function animate(timestamp = 0) {
@@ -109,23 +118,25 @@ function animate(timestamp = 0) {
     ctx.drawImage(backgroundImage, 0, 0, displayWidth, displayHeight);
   }
 
-  // silhouette de l'enfant
-  if (isSilhouetteLoaded) {
-    const silhouetteWidth = displayWidth * 0.75;
-    const silhouetteHeight = (silhouetteImage.height / silhouetteImage.width) * silhouetteWidth;
-    const silhouetteX = (displayWidth - silhouetteWidth) / 2;
-    const silhouetteY = displayHeight - silhouetteHeight + 280;
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(0, 0, displayWidth, displayHeight);
-    ctx.clip();
-    ctx.drawImage(silhouetteImage, silhouetteX, silhouetteY, silhouetteWidth, silhouetteHeight);
-    ctx.restore();
-  }
 
-  ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-  ctx.fillRect(0, 0, displayWidth, displayHeight);
+if (isSilhouetteLoaded && isFactoryLoaded) {
+  const silhouetteWidth = displayWidth * 0.75;
+  const silhouetteHeight = (silhouetteImage.height / silhouetteImage.width) * silhouetteWidth;
+  const silhouetteX = (displayWidth - silhouetteWidth) / 2;
+  const silhouetteY = displayHeight - silhouetteHeight + 280;
 
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = displayWidth;
+  tempCanvas.height = displayHeight;
+  const tempCtx = tempCanvas.getContext("2d")!;
+
+  tempCtx.drawImage(factoryImage, 0, 0, displayWidth, displayHeight);
+
+  tempCtx.globalCompositeOperation = "destination-in";
+  tempCtx.drawImage(silhouetteImage, silhouetteX, silhouetteY, silhouetteWidth, silhouetteHeight);
+
+  ctx.drawImage(tempCanvas, 0, 0);
+}
 
   drawGlitchTitle(timestamp);
 
