@@ -82,32 +82,41 @@ function drawGlitchTitle(timestamp: number) {
 
   ctx.save();
 
-  ctx.font = "bold 100px 'Share Tech Mono', monospace";
+  ctx.font = "bold 100px 'Lacquer', cursive";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  ctx.shadowColor = "rgba(0, 180, 255, 0.7)";
+  const baseAlpha = 0.9 + 0.05 * Math.sin(timestamp * 0.002);
+  ctx.shadowColor = `rgba(0, 180, 255, ${baseAlpha * 0.7})`;
   ctx.shadowBlur = 15;
-
-  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.fillStyle = `rgba(255, 255, 255, ${baseAlpha})`;
   ctx.fillText(text, centerX, y);
 
-  if (Math.random() < 0.02) {
-    ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
-    const offsetX = -1 + Math.random() * 1;
-    const offsetY = -0.5 + Math.random() * 1;
+  if (Math.random() < 0.05) {
+    ctx.font = "normal 100px 'Lacquer', cursive";
+    ctx.fillStyle = "rgba(255, 149, 0, 0.23)";
+    const offsetX = -2 + Math.random() * 3; 
+    const offsetY = -1 + Math.random() * 2;
     ctx.fillText(text, centerX + offsetX, y + offsetY);
   }
 
-  if (Math.random() < 0.02) {
-    ctx.fillStyle = "rgba(0, 255, 255, 0.3)";
-    const offsetX = 0.5 + Math.random() * 1;
-    const offsetY = -0.5 + Math.random() * 1;
+  if (Math.random() < 0.05) {
+    ctx.font = "italic 100px 'Lacquer', cursive";
+    ctx.fillStyle = "rgba(0, 255, 255, 0.28)";
+    const offsetX = 1 + Math.random() * 2;
+    const offsetY = -1 + Math.random() * 2; 
+    ctx.fillText(text, centerX + offsetX, y + offsetY);
+  }
+
+  if (Math.random() < 0.01) {
+    ctx.font = "bold 100px 'Lacquer', cursive";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+    const offsetX = -0.5 + Math.random(); 
+    const offsetY = -0.5 + Math.random();
     ctx.fillText(text, centerX + offsetX, y + offsetY);
   }
 
   ctx.restore();
-
 }
 
 function animate(timestamp = 0) {
