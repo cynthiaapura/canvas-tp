@@ -2,13 +2,13 @@ import "destyle.css";
 import "./style.css";
 
 class SmokeParticle {
-  x: number;
-  y: number;
-  radius: number;
-  opacity: number;
-  vx: number;
-  vy: number;
-  fade: number;
+  x: number = 0;
+  y: number = 0;
+  radius: number = 0;
+  opacity: number = 0;
+  vx: number = 0;
+  vy: number = 0;
+  fade: number = 0;
 
   constructor() {
     this.reset();
@@ -16,20 +16,18 @@ class SmokeParticle {
 
   reset() {
     this.x = Math.random() * displayWidth;
-    this.y = displayHeight + Math.random() * 60; // hauteur de la fumée
+    this.y = displayHeight - Math.random() * displayHeight;
     this.radius = 30 + Math.random() * 40;
-    this.opacity = 0.05 + Math.random() * 0.08;
+    this.opacity = 0.1;
     this.vx = -0.1 + Math.random() * 0.2;
     this.vy = -0.3 - Math.random() * 0.15;
-    this.fade = 0.0002 + Math.random() * 0.0003;
   }
 
   update() {
     this.x += this.vx;
     this.y += this.vy;
-    this.opacity -= this.fade;
 
-    if (this.opacity <= 0 || this.y + this.radius < 0) {
+    if (this.y + this.radius < 0) {
       this.reset();
     }
   }
@@ -55,15 +53,13 @@ const noiseCtx = noiseCanvas.getContext("2d")!;
 function generateNoise() {
   const imageData = noiseCtx.createImageData(noiseCanvas.width, noiseCanvas.height);
   const buffer = imageData.data;
-
   for (let i = 0; i < buffer.length; i += 4) {
     const val = Math.random() * 255;
-    buffer[i] = val;       // R
-    buffer[i + 1] = val;   // G
-    buffer[i + 2] = val;   // B
-    buffer[i + 3] = 15 + Math.random() * 10; // Opacité légère
+    buffer[i] = val;
+    buffer[i + 1] = val;
+    buffer[i + 2] = val;
+    buffer[i + 3] = 15 + Math.random() * 10;
   }
-
   noiseCtx.putImageData(imageData, 0, 0);
 }
 
@@ -88,15 +84,15 @@ let displayHeight = 0;
 let isBackgroundLoaded = false;
 let isSilhouetteLoaded = false;
 let isCharacterLoaded = false;
+let isFactoryLoaded = false;
 
 const smokeParticles: SmokeParticle[] = [];
-const SMOKE_COUNT = 40;
+const SMOKE_COUNT = 100;
 
 backgroundImage.onload = () => {
   imgWidth = backgroundImage.width;
   imgHeight = backgroundImage.height;
   isBackgroundLoaded = true;
-
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
   requestAnimationFrame(animate);
@@ -110,7 +106,6 @@ characterImage.onload = () => {
   isCharacterLoaded = true;
 };
 
-let isFactoryLoaded = false;
 factoryImage.onload = () => {
   isFactoryLoaded = true;
 };
@@ -150,7 +145,6 @@ function drawGlitchTitle(timestamp: number) {
   const y = 60;
 
   ctx.save();
-
   ctx.font = "bold 100px 'Lacquer', cursive";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -160,7 +154,6 @@ function drawGlitchTitle(timestamp: number) {
   ctx.shadowBlur = 15;
   ctx.fillStyle = `rgba(255, 255, 255, ${baseAlpha})`;
   ctx.fillText(text, centerX, y);
-
   if (Math.random() < 0.05) {
     ctx.font = "normal 100px 'Lacquer', cursive";
     ctx.fillStyle = "rgba(255, 149, 0, 0.23)";
@@ -195,40 +188,55 @@ function animate(timestamp = 0) {
     ctx.drawImage(backgroundImage, 0, 0, displayWidth, displayHeight);
   }
 
-  for (const p of smokeParticles) {
-    p.update();
-    p.draw(ctx);
-  }
-
   if (isSilhouetteLoaded && isFactoryLoaded) {
-    const silhouetteWidth = displayWidth * 0.75;
-    const silhouetteHeight = (silhouetteImage.height / silhouetteImage.width) * silhouetteWidth;
-    const silhouetteX = (displayWidth - silhouetteWidth) / 2;
-    const silhouetteY = displayHeight - silhouetteHeight + 280;
-
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = displayWidth;
     tempCanvas.height = displayHeight;
     const tempCtx = tempCanvas.getContext("2d")!;
 
+    const silhouetteWidth = displayWidth * 0.75;
+    const silhouetteHeight = (silhouetteImage.height / silhouetteImage.width) * silhouetteWidth;
+    const silhouetteX = (displayWidth - silhouetteWidth) / 2;
+    const silhouetteY = displayHeight - silhouetteHeight + 280;
+
     tempCtx.drawImage(factoryImage, 0, 0, displayWidth, displayHeight);
+
+    for (const p of smokeParticles) {
+      p.update();
+      p.draw(tempCtx);
+    }
+
     tempCtx.globalCompositeOperation = "destination-in";
     tempCtx.drawImage(silhouetteImage, silhouetteX, silhouetteY, silhouetteWidth, silhouetteHeight);
 
     ctx.drawImage(tempCanvas, 0, 0);
+ 
   }
 
   drawGlitchTitle(timestamp);
 
-  if (isCharacterLoaded) {
-    const charWidth = displayWidth * 0.33;
-    const charHeight = (characterImage.height / characterImage.width) * charWidth;
-    const x = (displayWidth - charWidth) / 2;
-    const y = displayHeight - charHeight - 10;
-    ctx.drawImage(characterImage, x, y, charWidth, charHeight);
-  }
+if (isCharacterLoaded) {
+  const charWidth = displayWidth * 0.33;
+  const charHeight = (characterImage.height / characterImage.width) * charWidth;
+  const x = (displayWidth - charWidth) / 2;
+  const y = displayHeight - charHeight - 10;
 
-  // 🔄 Bruit / grain animé
+  const scale = 1 + 0.02 * Math.sin(performance.now() * 0.001);
+
+  ctx.save();
+
+  const cx = x + charWidth / 2;
+  const cy = y + charHeight / 2;
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+  ctx.translate(-cx, -cy);
+
+  ctx.drawImage(characterImage, x, y, charWidth, charHeight);
+
+  ctx.restore();
+}
+
+
   generateNoise();
   ctx.drawImage(noiseCanvas, 0, 0, displayWidth, displayHeight);
 
